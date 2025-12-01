@@ -2,10 +2,17 @@ import mongoose from "mongoose";
 
 export const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    const uri = process.env.MONGO_URI;
+    if (!uri) {
+      console.warn('⚠️  MONGO_URI not set — skipping MongoDB connection (development mode)');
+      return;
+    }
+
+    await mongoose.connect(uri);
     console.log("🔥 MongoDB Connected");
   } catch (err) {
     console.error("MongoDB Error:", err.message);
-    process.exit(1);
+    // don't exit the process here to allow dev workflows without DB configured
+    // process.exit(1);
   }
 };

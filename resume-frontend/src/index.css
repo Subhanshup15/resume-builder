@@ -2,17 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 .input {
-  @apply w-full bg-slate-800 border border-slate-700 rounded-md p-3 text-sm text-white;
+  @apply w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-indigo-500;
 }
 
 .btn-primary {
-  @apply bg-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-700;
+  @apply bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium;
 }
 
 .btn-outline {
-  @apply border border-gray-400 px-4 py-2 rounded-md;
+  @apply border border-gray-500 hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-medium;
 }
 
-.btn-danger {
-  @apply border border-red-500 text-red-400 px-3 py-1 rounded-md;
+.section-card {
+  @apply bg-gray-800 p-4 rounded-md space-y-3;
+}
+
+.preview-title {
+  @apply text-xl font-semibold mt-4 mb-2;
+}
+.btn-primary {
+  @apply bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md hover:shadow-indigo-700/30 transition-all duration-200;
+}
+
+.btn-secondary {
+  @apply bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-lg border border-gray-600 font-medium shadow-md hover:shadow-gray-700/30 transition-all duration-200;
+}
+
+.page-bg {
+  @apply min-h-screen bg-gray-900 text-white px-6 flex justify-center items-center;
 }

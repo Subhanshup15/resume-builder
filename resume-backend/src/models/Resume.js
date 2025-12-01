@@ -5,6 +5,7 @@ const ResumeSchema = new mongoose.Schema(
     userId: { type: String, required: true },
     personal: {
       fullName: String,
+      summary: String,
       email: String,
       phone: String,
       location: String,
@@ -16,7 +17,18 @@ const ResumeSchema = new mongoose.Schema(
         desc: String,
       }
     ],
-    skills: [String]
+    skills: [String],
+    education: [
+      {
+        school: String,
+        degree: String,
+        start: String,
+        end: String,
+        desc: String,
+      }
+    ],
+    certifications: [String],
+    links: [String]
   },
   { timestamps: true }
 );

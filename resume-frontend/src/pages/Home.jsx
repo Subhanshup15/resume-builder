@@ -3,21 +3,21 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
-    <div className="h-screen flex flex-col items-center justify-center text-center p-6 bg-slate-900 text-white">
-      <h1 className="text-4xl font-bold mb-4">Resume Builder & Optimizer</h1>
-      <p className="text-lg text-gray-300 mb-8">
+    <div className="d-flex flex-column align-items-center justify-content-center text-center p-4" style={{ minHeight: "100vh", backgroundColor: "#0f172a", color: "#fff" }}>
+      <h1 className="display-4 fw-bold mb-4">Resume Builder & Optimizer</h1>
+      <p className="fs-5 text-secondary mb-5">
         Create a professional resume or improve your existing resume with AI.
       </p>
 
-      <div className="flex gap-4">
-        <Link to="/builder">
-          <button className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-lg">
+      <div className="d-flex gap-3">
+        <Link to="/builder" className="text-decoration-none">
+          <button className="btn btn-primary btn-lg fw-medium">
             📝 Create Fresh Resume
-          </button>
+          </button> 
         </Link>
 
-        <Link to="/optimizer">
-          <button className="px-6 py-3 bg-gray-700 hover:bg-gray-800 rounded-lg text-lg">
+        <Link to="/optimizer" className="text-decoration-none">
+          <button className="btn btn-secondary btn-lg fw-medium">
             ⚡ Optimize My Resume
           </button>
         </Link>
