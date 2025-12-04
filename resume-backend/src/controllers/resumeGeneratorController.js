@@ -1,11 +1,25 @@
 import PDFDocument from "pdfkit";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Lazy-load clients to avoid initialization errors
+let openai = null;
+let genAI = null;
 
-// Generate resume using Gemini AI
+function initializeClients() {
+    if (!openai && process.env.OPENAI_API_KEY) {
+        openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    }
+    if (!genAI && process.env.GEMINI_API_KEY) {
+        genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    }
+}
+
+// Generate resume using ChatGPT AI
 export const generateResume = async (req, res) => {
     try {
+        initializeClients();
+
         const formData = req.body;
 
         if (!formData.personal || !formData.personal.fullName) {
@@ -15,9 +29,42 @@ export const generateResume = async (req, res) => {
         // Build resume text from form data
         const resumeText = buildResumeText(formData);
 
-        // Use Gemini to enhance the resume
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await model.generateContent(`
+        let optimizedResume;
+
+        // Try OpenAI first, fallback to Gemini
+        if (openai) {
+            const response = await openai.chat.completions.create({
+                model: "gpt-3.5-turbo",
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are an expert resume writer. Improve resumes for maximum ATS compatibility and recruiter appeal."
+                    },
+                    {
+                        role: "user",
+                        content: `Improve this resume for maximum ATS compatibility and recruiter appeal.
+
+Guidelines:
+- Use strong action verbs (led, implemented, developed, etc.)
+- Include quantifiable metrics where possible
+- Keep bullet points concise and impactful
+- Maintain professional formatting
+- Do NOT invent fake experience
+- Preserve all original information
+
+Resume to enhance:
+${resumeText}
+
+Return ONLY the enhanced resume text, properly formatted with clear sections.`
+                    }
+                ],
+                temperature: 0.7,
+            });
+
+            optimizedResume = response.choices[0].message.content;
+        } else if (genAI) {
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+            const result = await model.generateContent(`
       You are an expert resume writer. Improve this resume for maximum ATS compatibility and recruiter appeal.
       
       Guidelines:
@@ -33,8 +80,10 @@ export const generateResume = async (req, res) => {
       
       Return ONLY the enhanced resume text, properly formatted with clear sections.
     `);
-
-        const optimizedResume = result.response.text();
+            optimizedResume = result.response.text();
+        } else {
+            return res.status(500).json({ error: "No AI API key configured. Set OPENAI_API_KEY or GEMINI_API_KEY in .env" });
+        }
 
         res.json({
             success: true,
